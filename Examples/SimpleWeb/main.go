@@ -13,8 +13,18 @@ import (
 	"github.com/yoyofx/yoyogo/WebFramework/Router"
 )
 
-func main() {
+func SimpleDemo() {
+	YoyoGo.CreateDefaultBuilder(func(router Router.IRouterBuilder) {
+		Endpoints.UsePrometheus(router)
 
+		router.GET("/info", func(ctx *Context.HttpContext) {
+			ctx.JSON(200, Context.M{"info": "ok"})
+		})
+	}).Build().Run()
+}
+
+func main() {
+	//SimpleDemo()
 	//webHost := YoyoGo.CreateDefaultBuilder(registerEndpointRouterConfig).Build()
 	webHost := CreateCustomBuilder().Build()
 	webHost.Run()
@@ -22,11 +32,12 @@ func main() {
 
 //* Create the builder of Web host
 func CreateCustomBuilder() *Abstractions.HostBuilder {
+	configuration := Abstractions.NewConfigurationBuilder().AddYamlFile("config").Build()
+
 	return YoyoGo.NewWebHostBuilder().
-		SetEnvironment(Context.Prod).
-		UseFastHttp().
+		UseConfiguration(configuration).
 		Configure(func(app *YoyoGo.WebApplicationBuilder) {
-			app.UseStatic("Static")
+			app.UseStaticAssets()
 			app.UseEndpoints(registerEndpointRouterConfig)
 			app.UseMvc(func(builder *Mvc.ControllerBuilder) {
 				builder.AddController(contollers.NewUserController)
@@ -45,6 +56,8 @@ func CreateCustomBuilder() *Abstractions.HostBuilder {
 func registerEndpointRouterConfig(router Router.IRouterBuilder) {
 	Endpoints.UseHealth(router)
 	Endpoints.UseViz(router)
+	Endpoints.UsePrometheus(router)
+	//Endpoints.UsePprof(router)
 
 	router.GET("/error", func(ctx *Context.HttpContext) {
 		panic("http get error")
@@ -84,13 +97,13 @@ func GetInfoByIOC(ctx *Context.HttpContext) {
 
 //HttpPost request: /info/:id ?q1=abc&username=123
 func PostInfo(ctx *Context.HttpContext) {
-	qs_q1 := ctx.Query("q1")
-	pd_name := ctx.Param("username")
-
+	qs_q1 := ctx.Input.Query("q1")
+	pd_name := ctx.Input.Param("username")
+	id := ctx.Input.Param("id")
 	userInfo := &UserInfo{}
 	_ = ctx.Bind(userInfo)
 
-	strResult := fmt.Sprintf("Name:%s , Q1:%s , bind: %s", pd_name, qs_q1, userInfo)
+	strResult := fmt.Sprintf("Name:%s , Q1:%s , bind: %s , routeData id:%s", pd_name, qs_q1, userInfo, id)
 
 	ctx.JSON(200, Context.M{"info": "hello world", "result": strResult})
 }
