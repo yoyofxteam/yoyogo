@@ -1,5 +1,7 @@
 package Abstractions
 
+import "github.com/yoyofx/yoyogo/Abstractions/Env"
+
 type ConfigurationContext struct {
 	enableFlag bool
 	enableEnv  bool
@@ -28,7 +30,7 @@ func (builder *ConfigurationBuilder) AddEnvironment() *ConfigurationBuilder {
 
 func (builder *ConfigurationBuilder) AddYamlFile(name string) *ConfigurationBuilder {
 	if builder.context.configType == "" {
-		builder.context.configType = "yaml"
+		builder.context.configType = "yml"
 		builder.context.configName = name
 	}
 	return builder
@@ -42,6 +44,12 @@ func (builder *ConfigurationBuilder) AddJsonFile(name string) *ConfigurationBuil
 	return builder
 }
 
+func (builder *ConfigurationBuilder) BuildEnv(env string) *Configuration {
+	builder.context.profile = env
+	return NewConfiguration(builder.context)
+}
+
 func (builder *ConfigurationBuilder) Build() *Configuration {
+	builder.context.profile = Env.Dev
 	return NewConfiguration(builder.context)
 }

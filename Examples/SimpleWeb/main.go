@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/yoyofx/yoyogo/Abstractions"
+	"github.com/yoyofx/yoyogo/Abstractions/xlog"
 	"github.com/yoyofx/yoyogo/DependencyInjection"
 	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/contollers"
 	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/models"
@@ -33,13 +34,13 @@ func main() {
 //* Create the builder of Web host
 func CreateCustomBuilder() *Abstractions.HostBuilder {
 	configuration := Abstractions.NewConfigurationBuilder().AddYamlFile("config").Build()
-
 	return YoyoGo.NewWebHostBuilder().
 		UseConfiguration(configuration).
 		Configure(func(app *YoyoGo.WebApplicationBuilder) {
 			app.UseStaticAssets()
 			app.UseEndpoints(registerEndpointRouterConfig)
 			app.UseMvc(func(builder *Mvc.ControllerBuilder) {
+				builder.AddViews(Mvc.ViewOption{Pattern: "Static/templates/**"})
 				builder.AddController(contollers.NewUserController)
 				builder.AddFilter("/v1/user/info", &contollers.TestActionFilter{})
 			})
@@ -110,7 +111,8 @@ func PostInfo(ctx *Context.HttpContext) {
 
 func getApplicationLifeEvent(life *Abstractions.ApplicationLife) {
 	printDataEvent := func(event Abstractions.ApplicationEvent) {
-		fmt.Printf("[yoyogo] Topic: %s; Event: %v\n", event.Topic, event.Data)
+		xlog.GetXLogger("Application Life Event:").Debug(" Topic: %s; Event: %v\n", event.Topic, event.Data)
+		//fmt.Printf("[yoyogo] Topic: %s; Event: %v\n", event.Topic, event.Data)
 	}
 
 	for {
