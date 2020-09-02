@@ -1,6 +1,7 @@
 package contollers
 
 import (
+	"github.com/yoyofx/yoyogo/Abstractions/ServiceDiscovery"
 	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/models"
 	"github.com/yoyofx/yoyogo/WebFramework/ActionResult"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
@@ -9,11 +10,12 @@ import (
 
 type UserController struct {
 	Mvc.ApiController
-	userAction models.IUserAction
+	userAction      models.IUserAction
+	discoveryClient ServiceDiscovery.IServiceDiscovery
 }
 
-func NewUserController(userAction models.IUserAction) *UserController {
-	return &UserController{userAction: userAction}
+func NewUserController(userAction models.IUserAction, sd ServiceDiscovery.IServiceDiscovery) *UserController {
+	return &UserController{userAction: userAction, discoveryClient: sd}
 }
 
 type RegisterRequest struct {
@@ -34,19 +36,22 @@ func (controller UserController) GetUserName(ctx *Context.HttpContext, request *
 	return ActionResult.Json{Data: result}
 }
 
-func (controller UserController) PostUserInfo(request *RegisterRequest) ActionResult.IActionResult {
+func (controller UserController) PostUserInfo(ctx *Context.HttpContext, request *RegisterRequest) ActionResult.IActionResult {
 
-	return ActionResult.Json{Data: Mvc.ApiResult{Success: true, Message: "ok", Data: request}}
+	return ActionResult.Json{Data: Mvc.ApiResult{Success: true, Message: "ok", Data: Context.H{
+		"user":    ctx.GetUser(),
+		"request": request,
+	}}}
 }
 
 func (controller UserController) GetHtmlHello() ActionResult.IActionResult {
-	return controller.View("hello.tmpl", map[string]interface{}{
+	return controller.View("hello", map[string]interface{}{
 		"name": "hello world!",
 	})
 }
 
 func (controller UserController) GetHtmlBody() ActionResult.IActionResult {
-	return controller.View("raw.tmpl", map[string]interface{}{
+	return controller.View("raw", map[string]interface{}{
 		"body": "raw.htm hello world!",
 	})
 }
@@ -54,4 +59,9 @@ func (controller UserController) GetHtmlBody() ActionResult.IActionResult {
 func (controller UserController) GetInfo() Mvc.ApiResult {
 
 	return controller.OK(controller.userAction.Login("zhang"))
+}
+
+func (controller UserController) GetSD() Mvc.ApiResult {
+	serviceList := controller.discoveryClient.GetAllInstances("demo_dev")
+	return controller.OK(serviceList)
 }

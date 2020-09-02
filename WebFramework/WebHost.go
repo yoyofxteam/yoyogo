@@ -5,7 +5,7 @@ import (
 	"github.com/yoyofx/yoyogo/Abstractions"
 	"github.com/yoyofx/yoyogo/Abstractions/Platform/ConsoleColors"
 	"github.com/yoyofx/yoyogo/Abstractions/Platform/ExitHookSignals"
-	"github.com/yoyofx/yoyogo/Abstractions/xlog"
+	"github.com/yoyofx/yoyogo/Abstractions/XLog"
 )
 
 type WebHost struct {
@@ -19,24 +19,30 @@ func NewWebHost(server Abstractions.IServer, hostContext *Abstractions.HostBuild
 
 func (host WebHost) Run() {
 	hostEnv := host.HostContext.HostingEnvironment
-	logger := xlog.GetXLogger("Application")
+	logger := XLog.GetXLogger("Application")
 	logger.SetCustomLogFormat(logFormater)
 	Abstractions.RunningHostEnvironmentSetting(hostEnv)
 
 	Abstractions.PrintLogo(logger, hostEnv)
 
 	ExitHookSignals.HookSignals(host)
+	Abstractions.HostRunning(logger, host.HostContext)
+	//application running
 	_ = host.webServer.Run(host.HostContext)
+	//application ending
+	Abstractions.HostEnding(logger, host.HostContext)
 
 }
 
-func logFormater(logInfo xlog.LogInfo) string {
+func logFormater(logInfo XLog.LogInfo) string {
 	outLog := fmt.Sprintf(ConsoleColors.Yellow("[yoyogo] ")+"[%s] %s",
 		logInfo.StartTime, logInfo.Message)
 	return outLog
 }
 
 func (host WebHost) StopApplicationNotify() {
+	logger := XLog.GetXLogger("Application")
+	Abstractions.HostEnding(logger, host.HostContext)
 	host.HostContext.ApplicationCycle.StopApplication()
 }
 

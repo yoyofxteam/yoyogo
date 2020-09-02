@@ -3,8 +3,8 @@ package Abstractions
 import (
 	"fmt"
 	"github.com/yoyofx/yoyogo"
+	"github.com/yoyofx/yoyogo/Abstractions/Configs"
 	"github.com/yoyofx/yoyogo/Abstractions/Env"
-	"github.com/yoyofx/yoyogo/Abstractions/configs"
 	"github.com/yoyofx/yoyogo/DependencyInjection"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"net"
@@ -37,9 +37,9 @@ func (host *HostBuilder) Configure(configure interface{}) *HostBuilder {
 func (host *HostBuilder) UseConfiguration(configuration IConfiguration) *HostBuilder {
 	host.Context.Configuration = configuration
 	host.Context.HostingEnvironment.Profile = configuration.GetProfile()
-	section := host.Context.Configuration.GetSection("application")
+	section := host.Context.Configuration.GetSection("yoyogo.application")
 	if section != nil {
-		config := &configs.HostConfig{}
+		config := &Configs.HostConfig{}
 		section.Unmarshal(config)
 		host.Context.HostConfiguration = config
 	}
@@ -133,7 +133,7 @@ func (host *HostBuilder) Build() IServiceHost {
 	host.Context.ApplicationServicesDef = services
 	applicationBuilder.SetHostBuildContext(host.Context)
 	host.Context.HostServices = services.Build()              //serviceProvider
-	host.Context.RequestDelegate = applicationBuilder.Build() // ServeHTTP(w http.ResponseWriter, r *http.Request)
+	host.Context.RequestDelegate = applicationBuilder.Build() // ServeHTTP(w http.IResponseWriter, r *http.Request)
 	host.Context.ApplicationServices = services.Build()       //serviceProvider
 
 	if host.lifeConfigure != nil {
@@ -145,6 +145,7 @@ func (host *HostBuilder) Build() IServiceHost {
 
 // inner configures function for DI.
 func innerConfigures(hostContext *HostBuildContext, serviceCollection *DependencyInjection.ServiceCollection) {
+	serviceCollection.AddSingleton(func() IConfiguration { return hostContext.Configuration })
 	serviceCollection.AddSingleton(func() *ApplicationLife { return hostContext.ApplicationCycle })
 	serviceCollection.AddSingleton(func() *Context.HostEnvironment { return hostContext.HostingEnvironment })
 }
