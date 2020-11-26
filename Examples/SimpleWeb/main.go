@@ -1,12 +1,12 @@
 package main
 
 import (
+	"SimpleWeb/contollers"
+	"SimpleWeb/models"
 	"fmt"
 	"github.com/yoyofx/yoyogo/Abstractions"
 	"github.com/yoyofx/yoyogo/Abstractions/XLog"
 	"github.com/yoyofx/yoyogo/DependencyInjection"
-	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/contollers"
-	"github.com/yoyofx/yoyogo/Examples/SimpleWeb/models"
 	"github.com/yoyofx/yoyogo/Internal/ServiceDiscoveryProvider/Nacos"
 	"github.com/yoyofx/yoyogo/WebFramework"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
@@ -27,20 +27,24 @@ func SimpleDemo() {
 }
 
 func main() {
-	//SimpleDemo()
+	SimpleDemo()
 	//webHost := YoyoGo.CreateDefaultBuilder(registerEndpointRouterConfig).Build()
-	webHost := CreateCustomBuilder().Build()
-	webHost.Run()
+	//webHost := CreateCustomBuilder().Build()
+	//webHost.Run()
 }
 
 //* Create the builder of Web host
 func CreateCustomBuilder() *Abstractions.HostBuilder {
-	configuration := Abstractions.NewConfigurationBuilder().AddYamlFile("config").Build()
+
+	configuration := Abstractions.NewConfigurationBuilder().
+		AddEnvironment().
+		AddYamlFile("config").Build()
+
 	return YoyoGo.NewWebHostBuilder().
 		UseConfiguration(configuration).
 		Configure(func(app *YoyoGo.WebApplicationBuilder) {
 			app.UseMiddleware(Middleware.NewCORS())
-			app.UseMiddleware(Middleware.NewRequestID())
+			//app.UseMiddleware(Middleware.NewRequestTracker())
 			app.UseStaticAssets()
 			app.UseEndpoints(registerEndpointRouterConfig)
 			app.UseMvc(func(builder *Mvc.ControllerBuilder) {
@@ -52,7 +56,7 @@ func CreateCustomBuilder() *Abstractions.HostBuilder {
 		}).
 		ConfigureServices(func(serviceCollection *DependencyInjection.ServiceCollection) {
 			serviceCollection.AddTransientByImplements(models.NewUserAction, new(models.IUserAction))
-			//Eureka.UseServiceDiscovery(serviceCollection)
+			// Eureka.UseServiceDiscovery(serviceCollection)
 			//Consul.UseServiceDiscovery(serviceCollection)
 			Nacos.UseServiceDiscovery(serviceCollection)
 		}).
@@ -67,7 +71,7 @@ func registerEndpointRouterConfig(router Router.IRouterBuilder) {
 	Endpoints.UseViz(router)
 	Endpoints.UsePrometheus(router)
 	Endpoints.UsePprof(router)
-	Endpoints.UseJwt(router)
+	//Endpoints.UseJwt(router)
 
 	router.GET("/error", func(ctx *Context.HttpContext) {
 		panic("http get error")
@@ -78,6 +82,8 @@ func registerEndpointRouterConfig(router Router.IRouterBuilder) {
 	router.Group("/v1/api", func(router *Router.RouterGroup) {
 		router.GET("/info", GetInfo)
 	})
+
+	router.GET("/", GetInfo)
 
 	router.GET("/info", GetInfo)
 	router.GET("/ioc", GetInfoByIOC)
@@ -120,7 +126,7 @@ func PostInfo(ctx *Context.HttpContext) {
 
 func getApplicationLifeEvent(life *Abstractions.ApplicationLife) {
 	printDataEvent := func(event Abstractions.ApplicationEvent) {
-		XLog.GetXLogger("Application Life Event:").Debug(" Topic: %s; Event: %v\n", event.Topic, event.Data)
+		XLog.GetXLogger("Application Life Event:").Debug("Topic: %s; Event: %v", event.Topic, event.Data)
 		//fmt.Printf("[yoyogo] Topic: %s; Event: %v\n", event.Topic, event.Data)
 	}
 

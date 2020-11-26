@@ -41,6 +41,14 @@ func (host *HostBuilder) UseConfiguration(configuration IConfiguration) *HostBui
 	if section != nil {
 		config := &Configs.HostConfig{}
 		section.Unmarshal(config)
+		portInterface := configuration.Get("port")
+		if portInterface != nil && portInterface.(string) != "" {
+			config.Server.Address = ":" + portInterface.(string)
+		}
+		appName := configuration.GetString("app")
+		if appName != "" {
+			config.Name = appName
+		}
 		host.Context.HostConfiguration = config
 	}
 	return host
@@ -94,6 +102,12 @@ func buildingHostEnvironmentSetting(context *HostBuildContext) {
 	hostEnv := context.HostingEnvironment
 	hostEnv.Version = YoyoGo.Version
 	hostEnv.Addr = DetectAddress("")
+	if context.Configuration != nil {
+		hostEnv.MetaData = make(map[string]string)
+		hostEnv.MetaData["config.path"] = context.Configuration.GetConfDir()
+		hostEnv.MetaData["server.path"] = context.Configuration.GetString("yoyogo.application.server.path")
+		hostEnv.MetaData["mvc.template"] = context.Configuration.GetString("yoyogo.application.server.mvc.template")
+	}
 	config := context.HostConfiguration
 	if config != nil {
 		hostEnv.ApplicationName = config.Name

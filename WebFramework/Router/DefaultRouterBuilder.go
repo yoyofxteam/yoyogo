@@ -2,6 +2,8 @@ package Router
 
 import (
 	"github.com/yoyofx/yoyogo/Abstractions"
+	"github.com/yoyofx/yoyogo/Abstractions/Platform/ConsoleColors"
+	"github.com/yoyofx/yoyogo/Abstractions/XLog"
 	"github.com/yoyofx/yoyogo/WebFramework/Context"
 	"github.com/yoyofx/yoyogo/WebFramework/Mvc"
 	"net/url"
@@ -12,21 +14,42 @@ type DefaultRouterBuilder struct {
 	mvcControllerBuilder  *Mvc.ControllerBuilder
 	endPointRouterHandler *EndPointRouterHandler
 	configuration         Abstractions.IConfiguration
+	log                   XLog.ILogger
 }
 
 func NewRouterBuilder() IRouterBuilder {
+
 	endpoint := &EndPointRouterHandler{
 		Component: "/",
 		Methods:   make(map[string]func(ctx *Context.HttpContext)),
 	}
 
 	defaultRouterHandler := &DefaultRouterBuilder{endPointRouterHandler: endpoint}
-
+	defaultRouterHandler.log = XLog.GetXLogger("DefaultRouterBuilder")
+	defaultRouterHandler.log.SetCustomLogFormat(nil)
 	return defaultRouterHandler
 }
 
 func (router *DefaultRouterBuilder) SetConfiguration(config Abstractions.IConfiguration) {
 	router.configuration = config
+	if config == nil {
+		return
+	}
+	// server.path
+	serverPath, hasPath := config.Get("yoyogo.application.server.path").(string)
+	if hasPath {
+		router.endPointRouterHandler.Component = serverPath
+		router.log.Info("server.path:  %s", ConsoleColors.Green(serverPath))
+	}
+	// mvc.template
+	mvcTemplate, hasTemplate := config.Get("yoyogo.application.server.mvc.template").(string)
+	if hasTemplate {
+		if hasPath {
+			mvcTemplate = serverPath + mvcTemplate
+		}
+		router.mvcControllerBuilder.GetMvcOptions().MapRoute(mvcTemplate)
+		router.log.Info("mvc.template:  %s", ConsoleColors.Green(mvcTemplate))
+	}
 }
 
 func (router *DefaultRouterBuilder) GetConfiguration() Abstractions.IConfiguration {
