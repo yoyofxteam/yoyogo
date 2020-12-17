@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/yoyofx/yoyogo/Abstractions"
-	"github.com/yoyofx/yoyogo/Abstractions/XLog"
+	"github.com/yoyofx/yoyogo/abstractions"
+	"github.com/yoyofx/yoyogo/abstractions/xlog"
 	"io/ioutil"
 	"net/http"
 )
@@ -13,7 +13,7 @@ import (
 func postWechatMessage(sendUrl, msg string) string {
 	client := &http.Client{}
 	req, _ := http.NewRequest("POST", sendUrl, bytes.NewBuffer([]byte(msg)))
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Content-Type", "application/extension")
 	req.Header.Set("charset", "UTF-8")
 	resp, err := client.Do(req)
 	if err != nil {
@@ -27,11 +27,11 @@ func postWechatMessage(sendUrl, msg string) string {
 	return strBody
 }
 
-func SendTxtMessage(request GrafanaAlertRequest, config Abstractions.IConfiguration) string {
+func SendTxtMessage(request GrafanaAlertRequest, config abstractions.IConfiguration) string {
 	tag := request.GetTag()
-	logger := XLog.GetXLogger("wechat")
+	logger := xlog.GetXLogger("wechat")
 	js, _ := json.Marshal(request)
-	logger.Info("Request json: %s", string(js))
+	logger.Info("Request extension: %s", string(js))
 	if tag == "" {
 		logger.Info("no send")
 		return ""
