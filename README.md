@@ -5,9 +5,8 @@ YoyoGo 一个简单、轻量、快速、基于依赖注入的微服务框架
 
 ![Release](https://img.shields.io/github/v/tag/yoyofx/yoyogo.svg?color=24B898&label=release&logo=github&sort=semver)
 ![Go](https://github.com/yoyofx/yoyogo/workflows/Go/badge.svg)
-![GoVersion](https://img.shields.io/github/go-mod/go-version/maxzhang1985/yoyogo)
-![DockerPull](https://img.shields.io/docker/pulls/maxzhang1985/yoyogo)
-[![Report](https://goreportcard.com/badge/github.com/yoyofx/yoyogo)](https://goreportcard.com/report/github.com/maxzhang1985/yoyogo)
+![GoVersion](https://img.shields.io/github/go-mod/go-version/yoyofx/yoyogo)
+[![Report](https://goreportcard.com/badge/github.com/yoyofx/yoyogo)](https://goreportcard.com/report/github.com/yoyofx/yoyogo)
 [![Documentation](https://img.shields.io/badge/godoc-reference-blue.svg?color=24B898&logo=go&logoColor=ffffff)](https://godoc.org/github.com/yoyofx/yoyogo)
 ![Contributors](https://img.shields.io/github/contributors/yoyofx/yoyogo.svg)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
@@ -35,15 +34,14 @@ go get github.com/yoyofx/yoyogo
 ```bash
 window 下在 cmd 中执行：
 set GO111MODULE=on
-set  GOPROXY=https://goproxy.cn
-
+set GOPROXY=https://goproxy.io,direct,https://mirrors.aliyun.com/goproxy/,https://goproxy.cn,https://athens.azurefd.net,https://gonexus.dev 
 linux  下执行：
 export GO111MODULE=on
 export GOPROXY=https://goproxy.cn
 ```
 ##  go version >= 1.13
 ```
-go env -w GOPROXY=https://goproxy.cn,direct
+go env -w GOPROXY=https://goproxy.io,direct,https://mirrors.aliyun.com/goproxy/,https://goproxy.cn,https://athens.azurefd.net,https://gonexus.dev
 ```
 ### vendor
 ```
