@@ -10,7 +10,6 @@ import (
 	_ "github.com/yoyofx/yoyogo/pkg/datasources/redis"
 	"github.com/yoyofx/yoyogo/pkg/servicediscovery/nacos"
 	web "github.com/yoyofx/yoyogo/web"
-	"github.com/yoyofx/yoyogo/web/actionresult/extension"
 	"github.com/yoyofx/yoyogo/web/context"
 	"github.com/yoyofx/yoyogo/web/endpoints"
 	"github.com/yoyofx/yoyogo/web/middlewares"
@@ -46,7 +45,7 @@ func main() {
 func CreateCustomBuilder() *abstractions.HostBuilder {
 	configuration := abstractions.NewConfigurationBuilder().
 		AddEnvironment().
-		AddYamlFile("config").Build()
+		AddYamlFile("config").AddRemoteWithNacos().Build()
 
 	return web.NewWebHostBuilder().
 		UseConfiguration(configuration).
@@ -56,7 +55,7 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 			//web.UseMiddleware(middlewares.NewRequestTracker())
 			app.UseStaticAssets()
 			app.UseEndpoints(registerEndpointRouterConfig)
-			app.SetJsonSerializer(extension.CamelJson())
+			//app.SetJsonSerializer(extension.CamelJson())
 			app.UseMvc(func(builder *mvc.ControllerBuilder) {
 				//builder.AddViews(&view.Option{Path: "./static/templates"})
 				builder.AddViewsByConfig()
@@ -75,6 +74,8 @@ func CreateCustomBuilder() *abstractions.HostBuilder {
 			//consul.UseServiceDiscovery(serviceCollection)
 			nacos.UseServiceDiscovery(serviceCollection)
 			//etcd.UseServiceDiscovery(serviceCollection)
+			//serviceCollection.AddSingletonByImplements(strategy.NewRandom, new(servicediscovery.Strategy))
+
 			session.UseSession(serviceCollection, func(options *session.Options) {
 				options.AddSessionStoreFactory(store.NewRedis)
 				//options.AddSessionMemoryStore(store.NewMemory())
@@ -95,6 +96,7 @@ func registerEndpointRouterConfig(rb router.IRouterBuilder) {
 	endpoints.UseReadiness(rb)
 	endpoints.UseLiveness(rb)
 	endpoints.UseJwt(rb)
+	endpoints.UseRouteInfo(rb)
 
 	rb.GET("/error", func(ctx *context.HttpContext) {
 		panic("http get error")
@@ -147,6 +149,7 @@ func GetInfoByIOC(ctx *context.HttpContext) {
 	ctx.JSON(200, context.H{"info": "ok " + userAction.Login("zhang")})
 }
 
+//bootstrap binding
 //HttpPost request: /info/:id ?q1=abc&username=123
 func PostInfo(ctx *context.HttpContext) {
 	qs_q1 := ctx.Input.Query("q1")

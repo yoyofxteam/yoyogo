@@ -17,6 +17,8 @@ type IServiceHost interface {
 	SetAppMode(mode string)
 }
 
+var sdRegEnable bool = true
+
 // host base
 type ServiceHost struct {
 	HostContext *HostBuilderContext
@@ -25,6 +27,12 @@ type ServiceHost struct {
 }
 
 func NewServiceHost(server IServer, hostContext *HostBuilderContext) ServiceHost {
+	var sdconfig *servicediscovery.Config
+	_ = hostContext.HostServices.GetService(&sdconfig)
+	if sdconfig != nil {
+		sdRegEnable = sdconfig.RegisterWithSelf
+	}
+
 	return ServiceHost{Server: server, HostContext: hostContext, logger: xlog.GetXLogger("Application")}
 }
 
@@ -55,31 +63,53 @@ func (host ServiceHost) SetAppMode(mode string) {
 }
 
 func HostRunning(log xlog.ILogger, context *HostBuilderContext) {
-	go startServerDiscovery(log, context)
+	go hostStarting(log, context)
 }
 
 func HostEnding(log xlog.ILogger, context *HostBuilderContext) {
-	endServerDiscovery(log, context)
+	hostEnding(log, context)
 }
 
-func startServerDiscovery(log xlog.ILogger, context *HostBuilderContext) {
-	var sd servicediscovery.IServiceDiscovery
-	_ = context.HostServices.GetService(&sd)
-	if sd != nil {
-		_ = sd.Register()
+func hostStarting(log xlog.ILogger, context *HostBuilderContext) {
+	//Service Discovery
+	if sdRegEnable {
+		var sd servicediscovery.IServiceDiscovery
+		_ = context.HostServices.GetService(&sd)
+		if sd != nil {
+			_ = sd.Register()
+		}
+	}
+	//---------------------------------------------------
+	//Host Services
+	var services []IHostService
+	_ = context.HostServices.GetService(&services)
+	for _, service := range services {
+		_ = service.Run()
 	}
 }
 
-func endServerDiscovery(log xlog.ILogger, context *HostBuilderContext) {
-	var sd servicediscovery.IServiceDiscovery
+func hostEnding(log xlog.ILogger, context *HostBuilderContext) {
+	//Service Discovery
+
 	var sdcache servicediscovery.Cache
 	err := context.HostServices.GetService(&sdcache)
 	if err == nil {
 		sdcache.Stop()
 	}
-	err = context.HostServices.GetService(&sd)
-	if err == nil && sd != nil {
-		_ = sd.Destroy()
+
+	if sdRegEnable {
+		var sd servicediscovery.IServiceDiscovery
+		err = context.HostServices.GetService(&sd)
+		if err == nil && sd != nil {
+			_ = sd.Destroy()
+		}
+	}
+	//---------------------------------------------------
+	//Host Services
+	var services []IHostService
+	_ = context.HostServices.GetService(&services)
+	for _, service := range services {
+		_ = service.Stop()
 	}
 }
 
