@@ -18,7 +18,7 @@
 						{
 							"name": "http://localhost:8080/app/v1/user/defaultbinding",
 							"request": {
-								"url": "http://localhost:8080/app/v1/user/defaultbinding",
+								"url": "{{baseurl}}/app/v1/user/defaultbinding",
 								"method": "POST",
 								"header": [
 									{
@@ -57,7 +57,7 @@
 						{
 							"name": "http://localhost:8080/app/v1/user/jsonbinding",
 							"request": {
-								"url": "http://localhost:8080/app/v1/user/jsonbinding",
+								"url": "{{baseurl}}/app/v1/user/jsonbinding",
 								"method": "POST",
 								"header": [
 									{
@@ -78,12 +78,10 @@
 							"name": "http://localhost:8080/app/v1/user/querybinding?user=zl&id=1&num=1",
 							"request": {
 								"url": {
-									"raw": "http://localhost:8080/app/v1/user/querybinding?user=zl&id=1&num=1",
-									"protocol": "http",
+									"raw": "{{baseurl}}/app/v1/user/querybinding?user=zl&id=1&num=1",
 									"host": [
-										"localhost"
+										"{{baseurl}}"
 									],
-									"port": "8080",
 									"path": [
 										"app",
 										"v1",
@@ -123,15 +121,42 @@
 					"_postman_isSubFolder": true
 				},
 				{
+					"name": "dbconfig_test",
+					"description": "",
+					"item": [
+						{
+							"name": "{{baseurl}}/app/v1/db/restconfig",
+							"request": {
+								"url": "{{baseurl}}/app/v1/db/restconfig",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "{{baseurl}}/app/v1/db/config",
+							"request": {
+								"url": "{{baseurl}}/app/v1/db/config",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
+				},
+				{
 					"name": "get c:user/a:register (MVC)",
 					"request": {
 						"url": {
-							"raw": "http://localhost:8080/app/v1/usercontroller/Register?UserName=max&Password=123",
-							"protocol": "http",
+							"raw": "{{baseurl}}/app/v1/usercontroller/Register?UserName=max&Password=123",
 							"host": [
-								"localhost"
+								"{{baseurl}}"
 							],
-							"port": "8080",
 							"path": [
 								"app",
 								"v1",
@@ -164,7 +189,7 @@
 				{
 					"name": "http://localhost:8080/user/GetInfo",
 					"request": {
-						"url": "http://localhost:8080/app/v1/user/GetInfo",
+						"url": "{{baseurl}}/app/v1/user/GetInfo",
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -175,7 +200,7 @@
 				{
 					"name": "http://localhost:8080/v1/user/info",
 					"request": {
-						"url": "http://localhost:8080/app/v1/user/getinfo",
+						"url": "{{baseurl}}/app/v1/user/getinfo",
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -187,12 +212,10 @@
 					"name": "http://localhost:8080/v1/user/username?username=max&password=123",
 					"request": {
 						"url": {
-							"raw": "http://localhost:8080/app/v1/user/getusername?UserName=max&Password=123",
-							"protocol": "http",
+							"raw": "{{baseurl}}/app/v1/user/getusername?UserName=max&Password=123",
 							"host": [
-								"localhost"
+								"{{baseurl}}"
 							],
-							"port": "8080",
 							"path": [
 								"app",
 								"v1",
@@ -225,7 +248,7 @@
 				{
 					"name": "http://localhost:8080/v1/user/postuserinfo",
 					"request": {
-						"url": "http://localhost:8080/app/v1/user/postuserinfo",
+						"url": "{{baseurl}}/app/v1/user/postuserinfo",
 						"method": "POST",
 						"header": [
 							{
@@ -259,7 +282,7 @@
 				{
 					"name": "http://localhost:8080/v1/user/gethtmlhello",
 					"request": {
-						"url": "http://localhost:8080/app/v1/user/gethtmlhello",
+						"url": "{{baseurl}}/app/v1/user/gethtmlhello",
 						"method": "GET",
 						"header": [
 							{
@@ -276,7 +299,7 @@
 				{
 					"name": "http://localhost:8080/v1/user/postuserinfo",
 					"request": {
-						"url": "http://localhost:8080/app/v1/user/postuserinfo",
+						"url": "{{baseurl}}/app/v1/user/postuserinfo",
 						"method": "POST",
 						"header": [
 							{
@@ -301,7 +324,7 @@
 				{
 					"name": "http://localhost:8080/v1/user/GetSD",
 					"request": {
-						"url": "http://localhost:8080/app/v1/user/GetSD",
+						"url": "{{baseurl}}/app/v1/user/GetSD",
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -313,12 +336,10 @@
 					"name": "get c:user/a:register (MVC)",
 					"request": {
 						"url": {
-							"raw": "http://localhost:8080/app/v1/usercontroller/Register?username=max&password=123",
-							"protocol": "http",
+							"raw": "{{baseurl}}/app/v1/usercontroller/Register?username=max&password=123",
 							"host": [
-								"localhost"
+								"{{baseurl}}"
 							],
-							"port": "8080",
 							"path": [
 								"app",
 								"v1",
@@ -351,7 +372,7 @@
 				{
 					"name": "http://localhost:8080/app/v1/user/captcha",
 					"request": {
-						"url": "http://localhost:8080/app/v1/user/captcha",
+						"url": "{{baseurl}}/app/v1/user/captcha",
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -362,7 +383,7 @@
 				{
 					"name": "http://localhost:8080/app/v1/db/mysql",
 					"request": {
-						"url": "http://localhost:8080/app/v1/db/mysql",
+						"url": "{{baseurl}}/app/v1/db/mysql",
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -373,7 +394,7 @@
 				{
 					"name": "http://localhost:8080/app/v1/sd/services",
 					"request": {
-						"url": "http://localhost:8080/app/v1/sd/services",
+						"url": "{{baseurl}}/app/v1/sd/services",
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -384,7 +405,7 @@
 				{
 					"name": "http://localhost:8080/app/v1/sd/cacheservices",
 					"request": {
-						"url": "http://localhost:8080/app/v1/sd/cacheservices",
+						"url": "{{baseurl}}/app/v1/sd/cacheservices",
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -395,7 +416,7 @@
 				{
 					"name": "http://localhost:8080/app/v1/sd/one",
 					"request": {
-						"url": "http://localhost:8080/app/v1/sd/one",
+						"url": "{{baseurl}}/app/v1/sd/one",
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -406,7 +427,7 @@
 				{
 					"name": "http://localhost:8080/app/v1/sd/httptest",
 					"request": {
-						"url": "http://localhost:8080/app/v1/sd/httptest",
+						"url": "{{baseurl}}/app/v1/sd/httptest",
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -421,26 +442,60 @@
 			"description": "",
 			"item": [
 				{
-					"name": "http://localhost:8080/actuator/health",
-					"request": {
-						"url": "http://localhost:8080/app/actuator/health",
-						"method": "GET",
-						"header": [],
-						"body": {},
-						"description": ""
-					},
-					"response": []
+					"name": "health",
+					"description": "",
+					"item": [
+						{
+							"name": "{{baseurl}}/actuator/health",
+							"request": {
+								"url": "{{baseurl}}/app/actuator/health/detail",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "{{baseurl}}/app/actuator/health/readiness",
+							"request": {
+								"url": "{{baseurl}}/app/actuator/health/readiness",
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"description": "",
+										"disabled": true
+									}
+								],
+								"body": {},
+								"description": ""
+							},
+							"response": []
+						},
+						{
+							"name": "{{baseurl}}/app/actuator/health/liveness",
+							"request": {
+								"url": "{{baseurl}}/app/actuator/health/liveness",
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"description": ""
+							},
+							"response": []
+						}
+					],
+					"_postman_isSubFolder": true
 				},
 				{
 					"name": "http://localhost:8080/actuator/graph?type=viz",
 					"request": {
 						"url": {
-							"raw": "http://localhost:8080/app/actuator/graph?type=viz",
-							"protocol": "http",
+							"raw": "{{baseurl}}/app/actuator/graph?type=viz",
 							"host": [
-								"localhost"
+								"{{baseurl}}"
 							],
-							"port": "8080",
 							"path": [
 								"app",
 								"actuator",
@@ -466,7 +521,7 @@
 				{
 					"name": "http://localhost:8080/auth/token",
 					"request": {
-						"url": "http://localhost:8080/app/auth/token",
+						"url": "{{baseurl}}/app/auth/token",
 						"method": "POST",
 						"header": [
 							{
@@ -484,27 +539,20 @@
 					"response": []
 				},
 				{
-					"name": "http://localhost:8080/app/actuator/health/readiness",
+					"name": "http://localhost:8080/app/actuator/routers",
 					"request": {
-						"url": "http://localhost:8080/app/actuator/health/readiness",
+						"url": "{{baseurl}}/app/actuator/routers",
 						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"description": "",
-								"disabled": true
-							}
-						],
+						"header": [],
 						"body": {},
 						"description": ""
 					},
 					"response": []
 				},
 				{
-					"name": "http://localhost:8080/app/actuator/route/info",
+					"name": "{{baseurl}}/app/actuator/metrics",
 					"request": {
-						"url": "http://localhost:8080/app/actuator/route/info",
+						"url": "{{baseurl}}/app/actuator/metrics",
 						"method": "GET",
 						"header": [],
 						"body": {},
@@ -518,12 +566,10 @@
 			"name": "post /info/:id  (params binding)",
 			"request": {
 				"url": {
-					"raw": "http://localhost:8080/app/info/1?q1=1231232",
-					"protocol": "http",
+					"raw": "{{baseurl}}/app/info/1?q1=1231232",
 					"host": [
-						"localhost"
+						"{{baseurl}}"
 					],
-					"port": "8080",
 					"path": [
 						"app",
 						"info",
@@ -558,7 +604,7 @@
 		{
 			"name": "get /v1/api/info (group)",
 			"request": {
-				"url": "http://localhost:8080/app/v1/api/info",
+				"url": "{{baseurl}}/app/v1/api/info",
 				"method": "GET",
 				"header": [],
 				"body": {},
@@ -569,7 +615,7 @@
 		{
 			"name": "get /info",
 			"request": {
-				"url": "http://localhost:8080/app/info",
+				"url": "{{baseurl}}/app/info",
 				"method": "GET",
 				"header": [
 					{
@@ -586,7 +632,7 @@
 		{
 			"name": "http://localhost:8080/app/newsession",
 			"request": {
-				"url": "http://localhost:8080/app/newsession",
+				"url": "{{baseurl}}/app/newsession",
 				"method": "GET",
 				"header": [],
 				"body": {},
@@ -597,7 +643,7 @@
 		{
 			"name": "http://localhost:8080/app/session",
 			"request": {
-				"url": "http://localhost:8080/app/session",
+				"url": "{{baseurl}}/app/session",
 				"method": "GET",
 				"header": [],
 				"body": {},

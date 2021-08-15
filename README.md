@@ -2,7 +2,7 @@
 
 YoyoGo 简单、轻量、快速、基于依赖注入的微服务框架
 
-* 文档： http://dev.yoyogo.run
+* 文档： https://dev.yoyogo.run
 
 ![Release](https://img.shields.io/github/v/tag/yoyofx/yoyogo.svg?color=24B898&label=release&logo=github&sort=semver)
 ![Go](https://github.com/yoyofx/yoyogo/workflows/Go/badge.svg)
@@ -66,6 +66,17 @@ func main() {
 ```
 ![](https://mnur-prod-public.oss-cn-beijing.aliyuncs.com/0/tech/20201209182340.png)
 
+## 依赖框架模块
+只涉及框架使用或贡献过的库
+```go
+github.com/yoyofxteam/dependencyinjection
+
+github.com/yoyofxteam/nacos-viper-remote  
+
+github.com/yoyofxteam/reflectx
+
+github.com/shima-park/agollo
+```
 # 实现进度
 ## 标准功能
 * [X] 打印Logo和日志（YoyoGo）
